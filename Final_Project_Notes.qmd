@@ -1,0 +1,237 @@
+---
+title: "CEVE 543 Final Project"
+subtitle: " Linear and Non-Linear Dimensionality Reduction in Climate Science: Methods and Applications of PCA and Autoencoders"
+author: Erika Adjei 
+date: "2025-11-04"
+
+topics: ["Dimensionality Reduction", "PCA", "Autoencoders"]
+engine: julia
+
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-block-bg: "#f8f8f8"
+    code-block-border-left: "#e1e4e5"
+    theme: simplex
+    number-sections: true
+    fig-format: svg
+    code-annotations: hover
+  typst:
+    fontsize: 11pt
+    margin: 
+      x: 1in
+      y: 1in
+    number-sections: true
+    fig-format: svg
+    echo: false
+    code-annotations: false
+
+execute: 
+  cache: true
+  freeze: auto
+
+# Code formatting options
+code-overflow: wrap
+code-line-numbers: false
+code-block-font-size: "0.85em"
+---
+## Introduction: What is Dimensionality Reduction? 
+
+The scale of high dimensional data sets is vast and noisy. This is particularly true in the field of climate science. Within the field of climate science, dimensionality reduction methods can be used to simplify massively complex datasets, identify major patterns of variability, and improve the accuracy and interpretability of climate models. Specifically, this helps to constrain/differentiate between climate noise, internal variability signals, and human-driven climate responses, allowing climate scientists to, for example, quantify modes of climate variability like the El Niño–Southern Oscillation (ENSO).
+
+
+
+
+## PCA Mathematical Framework 
+## Assumption: Data is discretized. Data is linear combination of orthogonal basis vectors. Data is mean centered. 
+
+## Principal Component Analysis (PCA)
+## What is PCA? 
+PCA, or Principal Component Analysis, is a dimensionality reduction technique that reduces the dimensionality of data by transforming it into a new set of orthogonal axes (called principal components) that capture the most variance. This technqique projects data onto these components in a way that maximizes the variance in fewer dimensions. 
+## How does PCA work 
+## First, standardize your data by normalizing (subtracting the mean and dividing by standard deviation for each feature to ensure that feature has equal weight for PCs). Then, compute the covariance matrix to identify how variables relate to each other. Calculate eigenvectors and eigenvalues of your covariance matric to determine the direction and strength of variance in your data. Finally, project your data onto top principal components 
+
+## Strengths, Limitations, and Appropriate Use Cases of PCA: 
+For small to moderately-sized, linearly separable datasets, PCA is an effective, computationally efficient method that provides an intuitive understanding of variance and how features relate to each other. Further, the eigenvalue decomposition and modern linear algebra libraries that serve as the mathematical foundation for this technique are well-studied. Disadvantages of this technique include the usage of variance, PCA's sensitivity to scale, and the linear assumptions this technique makes. PCA assumes that the directions of maximum variance are most important, and this does not hold true in certain situations. Additionally, because PCA is sensitive to the scale of input variables, variables with larger numerical ranges will dominate PCs. Standardization (usually mean centering and scaling to unit variance) can address this problem, but this can change the interpretation of results. PCA also only captures linear relationships between variables. So, if your data has non-linear patterns, PCA may not capture the complexity of variable interactions. 
+
+## When to use PCAs: 
+- Variable dimensionality is high 
+- Multi-colinearity between variables 
+
+Consider a data set \(Y(t,s)\) with 
+- \(t = 1,\ldots,N\) time indices,  
+- \(s = 1,\ldots,M\) spatial indices.
+ Y (t,s) = f (t)e(s) 
+
+In matrix form, the data is represented by an \(N \times M\) matrix \(Y\), where
+each row is a time step and each column is a spatial location.
+
+### Goal of PCA
+Find a low-rank approximation
+\[
+Y \approx Y_K = f_1 e_1^T + f_2 e_2^T + \cdots + f_K e_K^T,
+\]
+where  
+- \(e_k\) are spatial patterns (EOFs),  
+- \(f_k\) are the associated time series (PCs).
+
+### PCA Optimization Problem
+The first principal component solves
+\[
+\min_{f_1,\, e_1} \;\; \| Y - f_1 e_1^T \|_F^2 .
+\tag{1}
+\]
+
+After removing the first component, the second solves the same problem on the residual:
+\[
+Y - f_1 e_1^T.
+\]
+
+### Solution via Singular Value Decomposition (SVD)
+PCA is equivalent to the SVD:
+\[
+Y = U S V^T,
+\tag{2}
+\]
+where  
+- \(U\) contains left singular vectors,  
+- \(V\) contains right singular vectors,  
+- \(S = \mathrm{diag}(s_1, s_2, \ldots, s_R)\) has singular values \(s_1 \ge s_2 \ge \cdots\).
+
+The rank-\(K\) PCA approximation is:
+\[
+Y_K = s_1 u_1 v_1^T + s_2 u_2 v_2^T + \cdots + s_K u_K v_K^T.
+\tag{3}
+\]
+
+### Identifying PCs and EOFs
+Define
+\[
+f_k = s_k u_k, \qquad e_k = v_k.
+\tag{4}
+\]
+Then
+\[
+Y_K = f_1 e_1^T + \cdots + f_K e_K^T.
+\tag{5}
+\]
+Here,
+- \(e_k\) are the Empirical Orthogonal Functions (EOFs),  
+- \(f_k\) are the Principal Components (PCs).
+
+### Variance Explained
+Because singular vectors are orthogonal,
+\[
+\|Y\|_F^2 = s_1^2 + s_2^2 + \cdots + s_R^2.
+\tag{6}
+\]
+
+Variance explained by the first \(K\) PCs:
+\[
+\text{Fraction of variance explained}
+= 
+\frac{s_1^2 + s_2^2 + \cdots + s_K^2}
+     {s_1^2 + s_2^2 + \cdots + s_R^2}.
+\tag{7}
+\]
+
+
+## What are Autoencoders: 
+Autoencoders are a type of neural network that compresses high-dimensional, non-linear data into a lower-dimensional space, then reconstructs, or decodes, the original data from this compressed representation. Input and output dimensions are kept the same.  This ML technique captures hidden or random variables that, despite not being directly observable, fundamentally inform the way data is distributed.
+
+## How do Autoencoders work? 
+The first part of an Autoencoder framework compresses input data into a lower dimensional latent space called a bottleneck. This aims to capture the initial data's most important features in fewer dimensions. The compressed verson of this data is represented in the bottleneck layer, and this has fewer neurons than the input. The decoder, or the second part of the Autoencoder network, attempts to reconstruct the original input data from the compressed latent space. 
+
+
+## Strengths, Limitations, and Appropriate Use Cases of Autoencoders: 
+Some advantages of autoencoders include their ability to reduce the dimensionality of complex, non-linear datasets (ex: images and text) where linear methods like PCA may fail, and the flexibility and vast applicability of neural network architecture are used for feature extraction, like data compression, image denoising, anomaly detection and facial recognition. Disadvantage-wise, autoencoders are computationally more expensive and require more data to train effectively. Additionally, the features learned in the latent space (results of autoencoders) can be hard to interpret. Further, as with many deep learning techniques, autoencoders suffer from the black box problem.
+
+
+## Autoencoder Mathematical Framework
+
+## Assumptions:  
+Input features must be scaled to a consistent range using techniques like Z-Score normalization or Min-Max Scaling.
+
+## When to use Autoencoders? 
+Non-linear datasets with abstract bounds (ex: images, pictures, etc.) 
+If you have very large datasets 
+
+
+### Encoder
+The encoder maps an input vector \(x \in \mathbb{R}^d\) to a latent representation \(z \in \mathbb{R}^k\):
+\[
+z = f(x;\theta_e).
+\]
+
+For a single-layer encoder:
+\[
+z = \sigma_e(W_e x + b_e),
+\]
+where \(W_e\) and \(b_e\) are the encoder weights and biases.
+
+### Decoder
+\[
+\hat{x} = g(z;\theta_d).
+\]
+
+For a single-layer decoder:
+\[
+\hat{x} = \sigma_d(W_d z + b_d).
+\]
+
+### Full Autoencoder Mapping
+\[
+\hat{x} = (g \circ f)(x) = g\!\left(f(x;\theta_e);\theta_d\right).
+\]
+
+### Reconstruction Loss
+\[
+J(\theta) 
+= \frac{1}{N} \sum_{i=1}^N 
+L\!\left(x^{(i)}, \hat{x}^{(i)}\right)
+=
+\frac{1}{N} \sum_{i=1}^N 
+L\!\left(x^{(i)}, g(f(x^{(i)};\theta_e);\theta_d)\right).
+\]
+
+### Common Loss Functions
+
+**Mean Squared Error (MSE):**
+\[
+L_{\mathrm{MSE}}(x,\hat{x})
+=
+\frac{1}{d}
+\sum_{j=1}^d (x_j - \hat{x}_j)^2.
+\]
+
+**Binary Cross-Entropy (BCE):**
+\[
+L_{\mathrm{BCE}}(x,\hat{x})
+=
+-\frac{1}{d}
+\sum_{j=1}^d
+\left[
+x_j \log(\hat{x}_j)
++
+(1 - x_j)\log(1 - \hat{x}_j)
+\right].
+\]
+
+### Optimization
+\[
+\theta^* = \arg\min_{\theta} J(\theta).
+\]
+
+\[
+\theta \leftarrow \theta - \eta \,\nabla_{\theta} J(\theta).
+\]
+
+## Example of Autoencoder
+
+![](Autoencoder_example.png){width=70%}
+
+
+## Application of Dimensionaility Reduction to Class: 
+CEVE 543’s course work centers around quantifying hydroclimate extremes, their uncertainties, and the related impacts on relevant communities using varying statistical methods. Within the context of climate change, autoencoders and PCAs accomplish this goal. By collapsing noisy, high-dimensional data into low-dimensional modes of variance, these tools allow for the attribution and forecasting of hydroclimate extremes. This informs underlying patterns (ex: modes of internal variability like AMO and ENSO) driving pluvials, droughts, seasonal rainfall patterns, and regional rainfall extremes. Additionally, the use of dimensionality reduction tools like PCAs and autoencoders underpin the statistical framework of modern-day climate reanalyses (ex: LMR, PHYDA), and improves the use of statistical tools like stochastic weather generators. 
+
