@@ -30,7 +30,7 @@ The size and scale of high dimensional data is vast and noisy. This is particula
 
 ## Principal Component Analysis (PCA)
 ## What is PCA? 
-PCA, or Principal Component Analysis, is a dimensionality reduction technique that reduces the dimensionality of data by transforming it into a new set of orthogonal axes (called principal components) that capture the most variance. This technqique projects data onto these components in a way that maximizes the variance in fewer dimensions (DelSole et al. 2022). 
+PCA, or Principal Component Analysis, is a dimensionality reduction technique that reduces the dimensionality of data by transforming it into a new set of orthogonal axes (called principal components) that capture the most variance. This technique projects data onto these components in a way that maximizes the variance in fewer dimensions (DelSole et al. 2022). 
 
 ## How does PCA work 
 First, standardize your data by normalizing (subtracting the mean and dividing by standard deviation for each feature to ensure that feature has equal weight for PCs). Then, compute the covariance matrix to identify how variables relate to each other. Calculate eigenvectors and eigenvalues of your covariance matrix to determine the direction and strength of variance in your data. Finally, project your data onto top principal components (DelSole et al. 2022).  
@@ -42,7 +42,7 @@ For small to moderately-sized, linearly separable datasets, PCA is an effective,
 
 ## Key Assumptions 
 
-This approach assumes that your data is discretized, is a linear combination of orthogonal basis vectors, and is mean centered. 
+This approach assumes that your data is discretized, a linear combination of orthogonal basis vectors, and mean centered. 
 
 Consider a data set \(Y(t,s)\) with  
 - \(t = 1,\ldots,N\) time indices,  
@@ -87,8 +87,7 @@ PCA is equivalent to performing the SVD:
 $$
 Y = U S V^T,
 $$
-
-where  
+  
 
 where  
 - \(U\) contains left singular vectors,  
