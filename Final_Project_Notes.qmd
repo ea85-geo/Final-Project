@@ -53,7 +53,7 @@ For small to moderately-sized, linearly separable datasets, PCA is an effective,
 
 # PCA Mathematical Framework [@delsoleStatisticalMethodsClimate2022]
 
-### Key Assumptions 
+### Key Assumptions: 
 
 This approach assumes that your data is discretized, a linear combination of orthogonal basis vectors, and mean centered. 
 
@@ -85,7 +85,7 @@ $$
 Y_K = \sum_{k=1}^K \mathbf{f}_k\, \mathbf{e}_k^{\,T}.
 $$
 
-### PCA Optimization Problem
+### PCA Optimization Problem:
 
 The first principal component solves:
 
@@ -99,7 +99,7 @@ $$
 Y - f_1 e_1^T.
 $$
 
-### Solution via Singular Value Decomposition (SVD)
+### Solution via Singular Value Decomposition (SVD):
 
 PCA is equivalent to performing the SVD:
 $$
@@ -137,7 +137,7 @@ Here,
 - $\mathbf{f}_k$ are **Principal Components (PCs)**.
 
 
-### Variance Explained
+### Variance Explained:
 
 Because singular vectors are orthogonal:
 
